@@ -1,20 +1,20 @@
-package avltree_test
+package bstree_test
 
 import (
   "fmt"
-  "github.com/jenazads/gods/trees/avltree"
+  "github.com/jenazads/gods/trees/bstree"
   "github.com/jenazads/goutils"
 )
 
-func Example_AVLTree() {
-  tree := avltree.NewAVLTree(goutils.IntComparator, goutils.IntOperator)
+func Example_BSTree() {
+  tree := bstree.NewBSTree(goutils.IntComparator, goutils.IntOperator)
 
-  tree.Insert(1, "x")
-  tree.Insert(2, "b")
-  tree.Insert(1, "a")
-  tree.Insert(3, "c")
-  tree.Insert(4, "d")
+
   tree.Insert(5, "e")
+  tree.Insert(2, "b")
+  tree.Insert(3, "c")
+  tree.Insert(1, "a")
+  tree.Insert(4, "d")
   tree.Insert(6, "f")
   tree.Insert(7, "g")
   tree.Insert(8, "h")
@@ -39,11 +39,11 @@ func Example_AVLTree() {
   fmt.Println(tree)
   tree.Remove(5)
   fmt.Println(tree)
-  tree.Remove(6)
+  tree.Remove(4)
   fmt.Println(tree)
   tree.Remove(1)
   fmt.Println(tree)
-  tree.Remove(4)
+  tree.Remove(6)
   fmt.Println(tree)
   tree.Remove(8)
   fmt.Println(tree)

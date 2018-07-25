@@ -1,4 +1,4 @@
-package avltree
+package bstree
 
 import(
   "github.com/jenazads/goutils";
@@ -10,8 +10,8 @@ func assertIteratorImplementation() {
 
 // Iterator
 type Iterator struct {
-  tree     *AVLTree
-  node     *AVLNode
+  tree     *BSTree
+  node     *BSTNode
   position position
 }
 
@@ -22,7 +22,7 @@ const (
 )
 
 // Iterator returns a stateful iterator whose elements are key/value pairs.
-func (t *AVLTree) Iterator() goutils.ReverseIteratorKey {
+func (t *BSTree) Iterator() goutils.ReverseIteratorKey {
   return &Iterator{tree: t, node: nil, position: begin}
 }
 

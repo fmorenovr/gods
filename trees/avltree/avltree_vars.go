@@ -10,7 +10,7 @@ func assertTreeImplementation() {
   var _ gotree.GoTree = new(AVLTree)
 }
 
-func avlBalanceFactor(node *AVLNode) int8 {
+func avlBalanceFactor(node *AVLNode) int {
   if node == nil {
     return 0;
   }
@@ -63,6 +63,12 @@ func avlRightLeftRotate(root *AVLNode) *AVLNode {
   return avlLeftRotate(root);
 }
 
+func bstTransplant(u, v *AVLNode) (*AVLNode) {
+  v.Parent = u.Parent
+  u=v
+  return u;
+}
+
 func avlInsert(root *AVLNode, key interface{}, value interface{}, parent *AVLNode, comp goutils.TypeComparator) *AVLNode {
   if root==nil {
     aux:=NewAVLNode(key, value, parent)
@@ -74,7 +80,7 @@ func avlInsert(root *AVLNode, key interface{}, value interface{}, parent *AVLNod
     root.Children[0]=avlInsert(root.Children[0], key, value, root, comp);
   } else if comp(key, root.Key) == 1 {
     root.Children[1]=avlInsert(root.Children[1], key, value, root, comp);
-  } else {
+  } else if comp(key, root.Key) == 0 {
     root.Value = value
   }
 
@@ -108,26 +114,21 @@ func avlRemove(root *AVLNode, key interface{}, comp goutils.TypeComparator) *AVL
     root.Children[0]=avlRemove(root.Children[0], key, comp);
   } else if comp(key, root.Key) == 1 {
     root.Children[1]=avlRemove(root.Children[1], key, comp);
-  } else {
-    // cuando tiene un hijo
-    if (root.Children[0] == nil) || (root.Children[1] == nil) {
-      // evalua si left es !=null si es cierto tomo left o sino right
-      temp:=root.Children[0]
-      if temp==nil {
-        temp=root.Children[1]
-      }
-      if temp==nil { // sin hijos
-        temp=root;
-        root=nil;
-      } else { // un hijo
-        root=temp;
-      }
-    } else { // 2 hijos agarra el minimo del arbol derecho
+  } else if comp(key, root.Key) == 0 {
+    // sin hijos
+    if (root.Children[0] == nil) && (root.Children[1] == nil) {
+      root = nil
+    } else if (root.Children[0] == nil) && (root.Children[1] != nil) {
+      root=bstTransplant(root, root.Children[1])
+    } else if (root.Children[0] != nil) && (root.Children[1] == nil) {
+      root=bstTransplant(root, root.Children[0])
+    }else { // 2 hijos agarra el minimo del arbol derecho
       temp:= avlFindNode(root.Children[1], 0)
       root.Key=temp.Key;
       root.Children[1]=avlRemove(root.Children[1], temp.Key, comp);
     }
   }
+  
   // si solo tenia un nodito q era raiz
   if root==nil {
     return root;
@@ -160,9 +161,9 @@ func avlSearch(root *AVLNode, key interface{}, comp goutils.TypeComparator) (*AV
     return nil;
   } else {
     curr_node:=root;
-    if comp(curr_node.Value, key) == 1 {
+    if comp(curr_node.Key, key) == 1 {
       return avlSearch(curr_node.Children[0], key, comp);
-    } else if comp(curr_node.Value, key) == -1{
+    } else if comp(curr_node.Key, key) == -1{
       return avlSearch(curr_node.Children[1], key, comp);
     } else {
       return curr_node;
@@ -170,9 +171,9 @@ func avlSearch(root *AVLNode, key interface{}, comp goutils.TypeComparator) (*AV
   }
 }
 
-func avlHeight(root *AVLNode) int8 {
+func avlHeight(root *AVLNode) int {
   if root!=nil {
-    var a,b int8;
+    var a,b int;
     curr_node:=root;
     a=avlHeight(curr_node.Children[0]);
     b=avlHeight(curr_node.Children[1]);
@@ -226,8 +227,8 @@ func avlSumNodes(root *AVLNode, op goutils.TypeOperator) interface{}{
   return sum
 }
 
-func avlHeightOfNode(root *AVLNode, key interface{}, comp goutils.TypeComparator) int8 {
-  var height int8 =0;
+func avlHeightOfNode(root *AVLNode, key interface{}, comp goutils.TypeComparator) int {
+  height:=0;
   curr_node:=root;
   for curr_node!=nil {
     if comp(key, curr_node.Key) == 0 {
@@ -244,26 +245,26 @@ func avlHeightOfNode(root *AVLNode, key interface{}, comp goutils.TypeComparator
   return -1;
 }
 
-func avlPreorder_print(root *AVLNode) {
+func avlPrintPreorder(root *AVLNode) {
   if root != nil {
     fmt.Printf("%v ", root.Key);
-    avlPreorder_print(root.Children[0]);
-    avlPreorder_print(root.Children[1]);
+    avlPrintPreorder(root.Children[0]);
+    avlPrintPreorder(root.Children[1]);
   }
 }
 
-func avlInorder_print(root *AVLNode) {
+func avlPrintInorder(root *AVLNode) {
   if root != nil {
-    avlInorder_print(root.Children[0]);
+    avlPrintInorder(root.Children[0]);
     fmt.Printf("%v ", root.Key);
-    avlInorder_print(root.Children[1]);
+    avlPrintInorder(root.Children[1]);
   }
 }
 
-func avlPostorder_print(root *AVLNode) {
+func avlPrintPostorder(root *AVLNode) {
   if root != nil {
-    avlPostorder_print(root.Children[0]);
-    avlPostorder_print(root.Children[1]);
+    avlPrintPostorder(root.Children[0]);
+    avlPrintPostorder(root.Children[1]);
     fmt.Printf("%v ", root.Key);
   }
 }
@@ -325,30 +326,62 @@ func avlIsSameAs(a,b *AVLNode) bool {
   }
 }
 
-func output(node *AVLNode, prefix string, isTail bool, str *string) {
-	if node.Children[1] != nil {
-		newPrefix := prefix
-		if isTail {
-			newPrefix += "│   "
-		} else {
-			newPrefix += "    "
-		}
-		output(node.Children[1], newPrefix, false, str)
-	}
-	*str += prefix
-	if isTail {
-		*str += "└── "
-	} else {
-		*str += "┌── "
-	}
-	*str += node.String() + "\n"
-	if node.Children[0] != nil {
-		newPrefix := prefix
-		if isTail {
-			newPrefix += "    "
-		} else {
-			newPrefix += "│   "
-		}
-		output(node.Children[0], newPrefix, true, str)
-	}
+func avlTreePrint(node *AVLNode, prefix string, isTail bool, str *string) {
+  if node.Children[1] != nil {
+    newPrefix := prefix
+    if node.Parent == nil {
+      newPrefix += "     "
+    } else {
+      if isTail {
+        newPrefix += "│    "
+      } else {
+        newPrefix += "     "
+      }
+    }
+    avlTreePrint(node.Children[1], newPrefix, false, str)
+  }
+  *str += prefix
+  if node.Parent == nil {
+    *str += "nil──"
+  } else {
+    if isTail {
+      *str += "└────"
+    } else {
+      *str += "┌────"
+    }
+  }
+  *str += node.String() + "\n"
+  if node.Children[0] != nil {
+    newPrefix := prefix
+    if node.Parent == nil {
+      newPrefix += "     "
+    } else {
+      if isTail {
+        newPrefix += "     "
+      } else {
+        newPrefix += "│    "
+      }
+    }
+    avlTreePrint(node.Children[0], newPrefix, true, str)
+  }
+}
+
+func avlTreePrintLevels(root *AVLNode) {
+  height:=avlHeight(root)+1;
+  for i := 0;i < height;i++ {
+    fmt.Printf("\nNIVEL %v  :", i);
+    avlPrintNodeAtLevel(root, i, 0);
+    fmt.Println();
+  }
+}
+
+func avlPrintNodeAtLevel(root *AVLNode, height, level int) {
+  if root!=nil {
+    if(height==level) {
+      fmt.Printf("\t%v", root.Key)
+    } else {
+      avlPrintNodeAtLevel(root.Children[0], height, level+1);
+      avlPrintNodeAtLevel(root.Children[1], height, level+1);
+    }
+  }
 }
