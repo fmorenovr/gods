@@ -6,7 +6,7 @@ import (
   "github.com/jenazads/goutils"
 )
 
-func Example_BSTree() {
+func Example_bsTree() {
   tree := bstree.NewBSTree(goutils.IntComparator, goutils.IntOperator)
 
 

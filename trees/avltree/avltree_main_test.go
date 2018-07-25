@@ -6,7 +6,7 @@ import (
   "github.com/jenazads/goutils"
 )
 
-func Example_AVLTree() {
+func Example_avlTree() {
   tree := avltree.NewAVLTree(goutils.IntComparator, goutils.IntOperator)
 
   tree.Insert(1, "x")
