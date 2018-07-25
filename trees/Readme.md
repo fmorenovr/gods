@@ -1,7 +1,7 @@
 # Golang + Tree = goTree
 
 Golang implementation for Tree DS.  
-You can see an extended doc in [godocs](https://godoc.org/github.com/Jenazads/gods/tree).
+You can see an extended doc in [godocs](https://godoc.org/github.com/Jenazads/gods/trees).
 
 * Install it with:
 
