@@ -12,8 +12,10 @@ func assertTreeImplementation() {
 
 func bstInsert(root *BSTNode, key interface{}, value interface{}, parent *BSTNode, comp goutils.TypeComparator) *BSTNode {
   if root==nil {
-    aux:=NewBSTNode(key, value, parent)
+    aux:=NewBSTNode(key, parent)
+    aux.Value = append(aux.Value, value)
     aux.Parent=parent;
+    aux.Count = 1
     root=aux;
     return root
   }
@@ -22,9 +24,9 @@ func bstInsert(root *BSTNode, key interface{}, value interface{}, parent *BSTNod
   } else if comp(key, root.Key) == 1 {
     root.Children[1]=bstInsert(root.Children[1], key, value, root, comp);
   } else if comp(key, root.Key) == 0 {
-    root.Value = value
+    root.Value = append(root.Value, value)
+    root.Count = root.Count + 1
   }
-
   return root;
 }
 
@@ -44,17 +46,22 @@ func bstRemove(root *BSTNode, key interface{}, comp goutils.TypeComparator) *BST
   } else if comp(key, root.Key) == 1 {
     root.Children[1]=bstRemove(root.Children[1], key, comp);
   } else if comp(key, root.Key) == 0 {
-    // sin hijos
-    if (root.Children[0] == nil) && (root.Children[1] == nil) {
-      root = nil
-    } else if (root.Children[0] == nil) && (root.Children[1] != nil) {
-      root=bstTransplant(root, root.Children[1])
-    } else if (root.Children[0] != nil) && (root.Children[1] == nil) {
-      root=bstTransplant(root, root.Children[0])
-    }else { // 2 hijos agarra el minimo del arbol derecho
-      temp:= bstFindNode(root.Children[1], 0)
-      root.Key=temp.Key;
-      root.Children[1]=bstRemove(root.Children[1], temp.Key, comp);
+    if root.Count > 1 {
+      root.Value = root.Value[:len(root.Value)-1]
+      root.Count = root.Count - 1
+    } else if root.Count == 1 {
+      // sin hijos
+      if (root.Children[0] == nil) && (root.Children[1] == nil) {
+        root = nil
+      } else if (root.Children[0] == nil) && (root.Children[1] != nil) {
+        root=bstTransplant(root, root.Children[1])
+      } else if (root.Children[0] != nil) && (root.Children[1] == nil) {
+        root=bstTransplant(root, root.Children[0])
+      }else { // 2 hijos agarra el minimo del arbol derecho
+        temp:= bstFindNode(root.Children[1], 0)
+        root.Key=temp.Key;
+        root.Children[1]=bstRemove(root.Children[1], temp.Key, comp);
+      }
     }
   }
   // si solo tenia un nodito q era raiz

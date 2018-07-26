@@ -15,9 +15,10 @@ type BSTree struct {
 // Node 
 type BSTNode struct {
   Key      interface{}
-  Value    interface{}
-  Parent   *BSTNode    // Parent node
-  Children [2]*BSTNode // Children nodes, 0-> left, 1-> right
+  Value    []interface{}
+  Count    int
+  Parent   *BSTNode      // Parent node
+  Children [2]*BSTNode   // Children nodes, 0-> left, 1-> right
 }
 
 // New BS Tree
@@ -26,8 +27,8 @@ func NewBSTree(comp goutils.TypeComparator, op goutils.TypeOperator) (*BSTree) {
 }
 
 // New BS Node
-func NewBSTNode(key interface{}, value interface{}, p *BSTNode) (*BSTNode) {
-  return &BSTNode{Key: key, Value: value, Parent: p}
+func NewBSTNode(key interface{}, p *BSTNode) (*BSTNode) {
+  return &BSTNode{Key: key, Value: nil, Parent: p}
 }
 
 // IsEmpty, true if tree doesnt have nodes
@@ -156,11 +157,14 @@ func (t *BSTree) Keys() ([]interface{}) {
 
 // Values returns all values in-order based on the key.
 func (t *BSTree) Values() ([]interface{}) {
-  size:=t.Size()
-  values := make([]interface{}, size)
+  var values []interface{}
   it := t.Iterator()
   for i := 0; it.Next(); i++ {
-    values[i] = it.Value()
+    vals := (it.Value()).([]interface{})
+    size := len(vals)
+    for j:=0; j<size; j++ {
+      values = append(values, vals[j])
+    }
   }
   return values
 }
@@ -181,7 +185,7 @@ func (t *BSTree) String() (string) {
 
 // Print Node with fmt.Print*
 func (node *BSTNode) String() (string) {
-  return fmt.Sprintf("%v", node.Key)
+  return fmt.Sprintf("%v:%v", node.Key, node.Count)
 }
 
 // Return the largest node that is smaller than or equal to the given node.
