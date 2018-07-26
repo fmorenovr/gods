@@ -6,5 +6,5 @@ import(
 
 // Tree interface that all trees implement
 type GoTree interface {
-	goutils.MainFuncs
+	goutils.Container
 }
