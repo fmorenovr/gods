@@ -5,7 +5,7 @@ import (
   "github.com/jenazads/goutils";
 )
 
-// Tree holds elements of the AVL tree.
+// AVLTree object
 type AVLTree struct {
   Root       *AVLNode                // Root node
   comparator goutils.TypeComparator  // Key comparator

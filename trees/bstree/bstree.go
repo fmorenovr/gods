@@ -5,7 +5,7 @@ import (
   "github.com/jenazads/goutils";
 )
 
-// Tree holds elements of the BS tree.
+// BSTree object
 type BSTree struct {
   Root       *BSTNode                // Root node
   comparator goutils.TypeComparator  // Key comparator
