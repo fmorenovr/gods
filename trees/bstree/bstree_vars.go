@@ -2,8 +2,8 @@ package bstree
 
 import (
   "fmt";
-  "github.com/jenazads/gods/trees";
   "github.com/jenazads/goutils";
+  "github.com/jenazads/gods/trees";
 )
 
 func assertTreeImplementation() {

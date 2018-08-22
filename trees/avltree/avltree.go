@@ -61,6 +61,15 @@ func (t *AVLTree) Search(key interface{}) (*AVLNode) {
   return avlSearch(t.Root, key, t.comparator)
 }
 
+// Get Value
+func (t *AVLTree) Get(key interface{}) (interface{}) {
+  node := avlSearch(t.Root, key, t.comparator)
+  if node.Value == nil {
+    return nil
+  }
+  return node.Value
+}
+
 // return AVL Tree Height
 func (t *AVLTree) Height() (int) {
   return avlHeight(t.Root)

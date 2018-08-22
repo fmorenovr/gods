@@ -61,6 +61,15 @@ func (t *BSTree) Search(key interface{}) (*BSTNode) {
   return bstSearch(t.Root, key, t.comparator)
 }
 
+// Get Value
+func (t *BSTree) Get(key interface{}) (interface{}) {
+  node := bstSearch(t.Root, key, t.comparator)
+  if node.Value == nil {
+    return nil
+  }
+  return node.Value
+}
+
 // return BS Tree Height
 func (t *BSTree) Height() (int) {
   return bstHeight(t.Root)
