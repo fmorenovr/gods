@@ -35,6 +35,11 @@ func NewBNode(p *BNode, entry []*Entry, child []*BNode) (*BNode) {
   return &BNode{Parent: p, Entries: entry, Children: child}
 }
 
+// New Entry
+func NewEntry(key, value interface{}) *Entry{
+  return &Entry{Key: key, Value: value}
+}
+
 // IsEmpty, true if tree doesnt have nodes
 func (t *BTree) IsEmpty() bool {
   return t.size == 0
@@ -53,7 +58,7 @@ func (t *BTree) Clear() {
 
 // Put inserts key-value pair node into the tree
 func (t *BTree) Put(key interface{}, value interface{}) {
-  entry := &Entry{Key: key, Value: value}
+  entry := NewEntry(key, value)
 
   if t.Root == nil {
     t.Root = NewBNode(nil, []*Entry{entry}, []*BNode{})
