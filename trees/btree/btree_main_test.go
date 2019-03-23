@@ -1,9 +1,9 @@
 package btree_test
 
 import (
-	"fmt"
+  "fmt"
   "github.com/jenazads/gods/trees/btree"
-	"github.com/jenazads/goutils"
+  "github.com/jenazads/goutils"
 )
 
 func main() {
