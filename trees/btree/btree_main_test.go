@@ -2,8 +2,23 @@ package btree_test
 
 import (
 	"fmt"
-	"testing"
+  "github.com/jenazads/gods/trees/btree"
+	"github.com/jenazads/goutils"
 )
+
+func main() {
+	tree := btree.NewBTree(4, goutils.IntComparator)
+	tree.Put(1, "a")
+	tree.Put(2, "b")
+	tree.Put(3, "c")
+	tree.Put(10, "i")
+	tree.Put(4, "d")
+	tree.Put(5, "e")
+	tree.Put(6, "f")
+	tree.Put(7, "g")
+	tree.Put(8, "h")
+  fmt.Println(tree)
+}
 
 func TestBTreeGet1(t *testing.T) {
 	tree := NewWithIntComparator(3)
